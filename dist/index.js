@@ -6,13 +6,18 @@ var localStorage = _interopDefault(require('localStorage'));
 var jwtDecode = _interopDefault(require('jwt-decode'));
 var axios = _interopDefault(require('axios'));
 
+function makeStorageKey(key, ns) {
+  return ns ? `${ns}_${key}` : key;
+}
+
 class Token {
-  constructor(refreshUrl, refreshTTL) {
+  constructor(refreshUrl, refreshTTL, storageNamespace) {
     this.refreshUrl = refreshUrl;
     this.decodedToken = null;
     this.tokenExp = 0;
     this.tokenIat = 0;
     this.refreshTTL = refreshTTL;
+    this.storageNamespace = storageNamespace;
     this.init();
   }
 
@@ -23,7 +28,7 @@ class Token {
   }
 
   getToken() {
-    return localStorage.getItem('Authorization');
+    return localStorage.getItem(makeStorageKey('Authorization', this.storageNamespace));
   }
 
   setToken(token) {
@@ -33,14 +38,14 @@ class Token {
       return;
     }
     const normalizedToken = token.replace('Bearer ', '');
-    localStorage.setItem('Authorization', normalizedToken);
+    localStorage.setItem(makeStorageKey('Authorization', this.storageNamespace), normalizedToken);
     this.decodedToken = jwtDecode(normalizedToken);
     this.tokenExp = this.decodedToken.exp;
     this.tokenIat = this.decodedToken.iat;
   }
 
   removeToken() {
-    localStorage.removeItem('Authorization');
+    localStorage.removeItem(makeStorageKey('Authorization', this.storageNamespace));
     this.decodedToken = null;
     this.tokenExp = null;
     this.tokenIat = null;
@@ -157,8 +162,10 @@ class Api {
 }
 
 class JWTAuthApi {
-  constructor(config, refreshUrl, refreshTTL) {
-    this.token = new Token(refreshUrl, refreshTTL);
+  constructor(config, refreshUrl, refreshTTL, options) {
+    const { storageNamespace } = { ...options };
+    
+    this.token = new Token(refreshUrl, refreshTTL, storageNamespace);
     this.api = new Api(config, this.token);
   }
 
