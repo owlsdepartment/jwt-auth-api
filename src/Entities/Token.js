@@ -1,13 +1,18 @@
 import localStorage from 'localStorage';
 import jwtDecode from 'jwt-decode';
 
+function makeStorageKey(key, ns) {
+  return ns ? `${ns}_${key}` : key;
+}
+
 export default class Token {
-  constructor(refreshUrl, refreshTTL) {
+  constructor(refreshUrl, refreshTTL, storageNamespace) {
     this.refreshUrl = refreshUrl;
     this.decodedToken = null
     this.tokenExp = 0;
     this.tokenIat = 0;
     this.refreshTTL = refreshTTL;
+    this.storageNamespace = storageNamespace;
     this.init();
   }
 
@@ -18,7 +23,7 @@ export default class Token {
   }
 
   getToken() {
-    return localStorage.getItem('Authorization');
+    return localStorage.getItem(makeStorageKey('Authorization', this.storageNamespace));
   }
 
   setToken(token) {
@@ -28,14 +33,14 @@ export default class Token {
       return;
     }
     const normalizedToken = token.replace('Bearer ', '');
-    localStorage.setItem('Authorization', normalizedToken);
+    localStorage.setItem(makeStorageKey('Authorization', this.storageNamespace), normalizedToken);
     this.decodedToken = jwtDecode(normalizedToken);
     this.tokenExp = this.decodedToken.exp;
     this.tokenIat = this.decodedToken.iat;
   }
 
   removeToken() {
-    localStorage.removeItem('Authorization');
+    localStorage.removeItem(makeStorageKey('Authorization', this.storageNamespace));
     this.decodedToken = null;
     this.tokenExp = null;
     this.tokenIat = null;
