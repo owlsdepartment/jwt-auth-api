@@ -19,7 +19,20 @@ export default class Api {
       this.refreshingToken
         .then(() => {
           this.tokenIsRefreshing = false;
+        })
+        .catch(() => {
+          this._logoutIfCan();
         });
+    }
+
+    if (!this.token.canRefresh()) {
+      this._logoutIfCan();
+    }
+  }
+
+  _logoutIfCan() {
+    if (this.config.logoutCallback) {
+      this.config.logoutCallback();
     }
   }
 
