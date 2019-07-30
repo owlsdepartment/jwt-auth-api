@@ -17,9 +17,18 @@ export default class Api {
       this.refreshingToken = this.token.refreshToken(this.axiosInstance);
 
       this.refreshingToken
-        .then(() => {
-          this.tokenIsRefreshing = false;
-        });
+        .then(() => { this.tokenIsRefreshing = false; })
+        .catch(this._tryToLogout);
+    }
+
+    if (!this.token.canRefresh()) {
+      this._tryToLogout();
+    }
+  }
+
+  _tryToLogout() {
+    if (this.config.logoutCallback) {
+      this.config.logoutCallback();
     }
   }
 
