@@ -1,7 +1,7 @@
-import CookieStorageFactory from '../Factories/CookieStorageFactory';
-import LocalStorageFactory from '../Factories/LocalStorageFactory';
-import Storage from '../Utils/Storage';
 import jwtDecode from 'jwt-decode';
+import Storage from '../Utils/Storage';
+import LocalStorageFactory from '../Factories/LocalStorageFactory';
+import CookieStorageFactory from '../Factories/CookieStorageFactory';
 
 function makeStorageKey(key, ns) {
   return ns ? `${ns}_${key}` : key;
