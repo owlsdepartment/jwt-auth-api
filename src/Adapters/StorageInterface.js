@@ -1,4 +1,4 @@
-export default class AbstractStorageAdapter {
+export default class StorageInterface {
     setItem(key, value) {}
     getItem(key) {}
     removeItem(key) {}

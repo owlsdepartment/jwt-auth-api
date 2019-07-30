@@ -1,44 +1,24 @@
 import jwtDecode from 'jwt-decode';
-import Storage from '../Utils/Storage';
-import LocalStorageFactory from '../Factories/LocalStorageFactory';
-import CookieStorageFactory from '../Factories/CookieStorageFactory';
 
 function makeStorageKey(key, ns) {
   return ns ? `${ns}_${key}` : key;
 }
 
 export default class Token {
-  constructor(refreshUrl, refreshTTL, storageType, storageNamespace) {
+  constructor(refreshUrl, refreshTTL, storage, storageNamespace) {
     this.refreshUrl = refreshUrl;
     this.decodedToken = null
     this.tokenExp = 0;
     this.tokenIat = 0;
     this.refreshTTL = refreshTTL;
     this.storageNamespace = storageNamespace;
-    this.storage = new Storage();
-    this.resolveStorage(storageType);
+    this.storage = storage;
     this.init();
   }
 
   init() {
     if (this.getToken()) {
       this.setToken(this.getToken());
-    }
-  }
-
-  resolveStorage(storageType) {
-    switch (storageType) {
-      case "cookies": {
-        this.storage.setStorage(new CookieStorageFactory);
-        break;
-      }
-      case "local-storage": {
-        this.storage.setStorage(new LocalStorageFactory);
-        break;
-      }
-      default: {
-        console.error('Storage type option is invalid');
-      }
     }
   }
 
