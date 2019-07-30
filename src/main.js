@@ -4,7 +4,7 @@ import StorageFactory from './Factories/StorageFactory';
 
 export default class JWTAuthApi {
   constructor(config, refreshUrl, refreshTTL, options) {
-    const { storageType, storageNamespace } = { ...options };
+    const { storageType, storageNamespace } = options;
     const storageFactory = new StorageFactory();
     const storage = storageFactory.getStorage(storageType);
     
