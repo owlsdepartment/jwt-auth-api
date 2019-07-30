@@ -3,9 +3,9 @@ import Api from './Entities/Api';
 
 export default class JWTAuthApi {
   constructor(config, refreshUrl, refreshTTL, options) {
-    const { storageNamespace } = { ...options };
+    const { storageType, storageNamespace } = { ...options };
     
-    this.token = new Token(refreshUrl, refreshTTL, storageNamespace);
+    this.token = new Token(refreshUrl, refreshTTL, storageType, storageNamespace);
     this.api = new Api(config, this.token);
   }
 
