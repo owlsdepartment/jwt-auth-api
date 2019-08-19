@@ -2,22 +2,24 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var localStorage = _interopDefault(require('localStorage'));
 var jwtDecode = _interopDefault(require('jwt-decode'));
 var axios = _interopDefault(require('axios'));
+var localStorage$1 = _interopDefault(require('localStorage'));
+var cookieStorage = require('cookie-storage');
 
 function makeStorageKey(key, ns) {
   return ns ? `${ns}_${key}` : key;
 }
 
 class Token {
-  constructor(refreshUrl, refreshTTL, storageNamespace) {
+  constructor(refreshUrl, refreshTTL, storage, storageNamespace) {
     this.refreshUrl = refreshUrl;
     this.decodedToken = null;
     this.tokenExp = 0;
     this.tokenIat = 0;
     this.refreshTTL = refreshTTL;
     this.storageNamespace = storageNamespace;
+    this.storage = storage;
     this.init();
   }
 
@@ -161,11 +163,71 @@ class Api {
   }
 }
 
+class StorageInterface {
+    setItem(key, value) {}
+    getItem(key) {}
+    removeItem(key) {}
+}
+
+class CookieStorageFactory extends StorageInterface {
+    constructor() {
+        this.storage = localStorage$1;
+    }
+
+    getItem(key) {
+        this.storage.getItem(key);
+    }
+
+    removeItem(key) {
+        this.storage.removeItem(key);
+    }
+
+    setItem(key, value) {
+        this.storage.setItem(key, value);
+    }
+}
+
+class CookieStorageFactory$1 extends StorageInterface {
+    constructor() {
+        this.storage = cookieStorage.CookieStorage;
+    }
+
+    getItem(key) {
+        this.storage.getItem(key);
+    }
+
+    removeItem(key) {
+        this.storage.removeItem(key);
+    }
+
+    setItem(key, value) {
+        this.storage.setItem(key, value);
+    }
+}
+
+class StorageFactory {
+  getStorage(storageType) {
+    switch (storageType) {
+      case "cookies": {
+        return new CookieStorageFactory$1();
+      }
+      case "local-storage": {
+        return new CookieStorageFactory();
+      }
+      default: {
+        console.error('Storage type option is invalid');
+      }
+    }
+  }
+}
+
 class JWTAuthApi {
   constructor(config, refreshUrl, refreshTTL, options) {
-    const { storageNamespace } = { ...options };
+    const { storageType, storageNamespace } = options;
+    const storageFactory = new StorageFactory();
+    const storage = storageFactory.getStorage(storageType);
     
-    this.token = new Token(refreshUrl, refreshTTL, storageNamespace);
+    this.token = new Token(refreshUrl, refreshTTL, storage, storageNamespace);
     this.api = new Api(config, this.token);
   }
 
