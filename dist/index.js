@@ -171,6 +171,7 @@ class StorageInterface {
 
 class LocalStorageAdapter extends StorageInterface {
     constructor() {
+        super();
         this.storage = localStorage$1;
     }
 
@@ -189,6 +190,7 @@ class LocalStorageAdapter extends StorageInterface {
 
 class CookieStorageAdapter extends StorageInterface {
     constructor() {
+        super();
         this.storage = cookieStorage.CookieStorage;
     }
 

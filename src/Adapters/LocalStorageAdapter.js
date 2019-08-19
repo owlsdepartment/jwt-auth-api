@@ -3,6 +3,7 @@ import StorageInterface from './StorageInterface';
 
 export default class LocalStorageAdapter extends StorageInterface {
     constructor() {
+        super();
         this.storage = localStorage;
     }
 

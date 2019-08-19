@@ -3,6 +3,7 @@ import StorageInterface from './StorageInterface';
 
 export default class CookieStorageAdapter extends StorageInterface {
     constructor() {
+        super();
         this.storage = CookieStorage;
     }
 
