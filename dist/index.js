@@ -169,7 +169,7 @@ class StorageInterface {
     removeItem(key) {}
 }
 
-class CookieStorageFactory extends StorageInterface {
+class LocalStorageAdapter extends StorageInterface {
     constructor() {
         this.storage = localStorage$1;
     }
@@ -187,7 +187,7 @@ class CookieStorageFactory extends StorageInterface {
     }
 }
 
-class CookieStorageFactory$1 extends StorageInterface {
+class CookieStorageAdapter extends StorageInterface {
     constructor() {
         this.storage = cookieStorage.CookieStorage;
     }
@@ -209,10 +209,10 @@ class StorageFactory {
   getStorage(storageType) {
     switch (storageType) {
       case "cookies": {
-        return new CookieStorageFactory$1();
+        return new CookieStorageAdapter();
       }
       case "local-storage": {
-        return new CookieStorageFactory();
+        return new LocalStorageAdapter();
       }
       default: {
         console.error('Storage type option is invalid');

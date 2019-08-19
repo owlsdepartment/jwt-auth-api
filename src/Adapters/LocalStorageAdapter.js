@@ -1,7 +1,7 @@
 import localStorage from 'localStorage';
 import StorageInterface from './StorageInterface';
 
-export default class CookieStorageFactory extends StorageInterface {
+export default class LocalStorageAdapter extends StorageInterface {
     constructor() {
         this.storage = localStorage;
     }
