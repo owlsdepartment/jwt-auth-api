@@ -22,7 +22,13 @@ export default class Api {
     }
 
     if (!this.token.canRefresh()) {
-      this.token.removeToken();
+      this._tryToLogout();
+    }
+  }
+
+  _tryToLogout() {
+    if (this.config.logoutCallback) {
+      this.config.logoutCallback();
     }
   }
 
