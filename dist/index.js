@@ -179,7 +179,7 @@ class JWTAuthApi {
   }
   
   setLogoutCallback(callback) {
-    this.config.logoutCallback = callback;
+    this.config['logoutCallback'] = callback;
   }
 
   token() {
