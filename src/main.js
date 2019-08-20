@@ -8,6 +8,10 @@ export default class JWTAuthApi {
     this.token = new Token(refreshUrl, refreshTTL, storageNamespace);
     this.api = new Api(config, this.token);
   }
+  
+  setLogoutCallback(callback) {
+    this.config.logoutCallback = callbck;
+  }
 
   token() {
     return this.token;
