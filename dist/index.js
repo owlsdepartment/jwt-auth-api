@@ -177,6 +177,10 @@ class JWTAuthApi {
     this.token = new Token(refreshUrl, refreshTTL, storageNamespace);
     this.api = new Api(config, this.token);
   }
+  
+  setLogoutCallback(callback) {
+    this.config.logoutCallback = callback;
+  }
 
   token() {
     return this.token;
